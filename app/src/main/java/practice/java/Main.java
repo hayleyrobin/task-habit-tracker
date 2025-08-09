@@ -50,7 +50,29 @@ public class Main {
                     }
                     break;
                 case "3":
-                    System.out.println(">> Mark Complete selected (to be implemented)");
+                    if( tasks.isEmpty()){System.out.println("No tasks to complete!");}
+                    else{
+                        System.out.println("\n--- Tasks ---");
+                        for( int i= 0; i < tasks.size(); i++){
+                            System.out.println((i + 1) + ". " + tasks.get(i));
+                        }
+
+                        System.out.println("Which task would you like to mark complete?: ");
+
+                        try{
+                            int compNum = Integer.parseInt(scanner.nextLine());
+
+                            if(compNum > 0 && compNum <= tasks.size()){
+                                Task selectedT = tasks.get(compNum-1);
+                                selectedT.markComplete();
+                                System.out.println("Completed Task!");
+                            } else{
+                                System.out.println("Invalid task number choice.");
+                            }
+                        } catch(NumberFormatException e){
+                            System.out.println("Please eneter a valid number");
+                        }
+                    }
                     break;
                 case "4":
                     System.out.println("Exiting... Goodbye!");
