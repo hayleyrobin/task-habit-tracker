@@ -1,11 +1,14 @@
 package practice.java;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
+
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while(!exit){
             // Show menu options
@@ -21,10 +24,30 @@ public class Main {
 
             switch(input){
                 case "1":
-                System.out.println(">> Add Task selected (to be implemented)");
+                    System.out.println(">> Enter task name: ");
+                    String name = scanner.nextLine();
+
+                    System.out.println(">> Enter due date of task: ");
+                    String date = scanner.nextLine();
+
+                    System.out.println(">> Is this task a habit? (yes or no):");
+                    String habit = scanner.nextLine();
+                    boolean isHabit = habit.equalsIgnoreCase("yes");
+
+                    Task nTask = new Task(name, date, isHabit);
+                    tasks.add(nTask);
+
+                    System.out.println("Task Added!");
                     break;
                 case "2":
-                    System.out.println(">> View Tasks selected (to be implemented)");
+                    if(tasks.isEmpty()){
+                        System.out.println("Empty Task List!");
+                    } else{
+                        System.out.println("\n--- Tasks ---");
+                        for( int i= 0; i < tasks.size(); i++){
+                            System.out.println((i + 1) + ". " + tasks.get(i));
+                        }
+                    }
                     break;
                 case "3":
                     System.out.println(">> Mark Complete selected (to be implemented)");
@@ -36,7 +59,6 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please enter 1-4."); 
             }
-
             exit =true;
         }
         scanner.close();
