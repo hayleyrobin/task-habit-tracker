@@ -1,6 +1,12 @@
 package practice.java;
 
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Main {
@@ -8,8 +14,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
-        ArrayList<Task> tasks = new ArrayList<>();
-
+        ArrayList<Task> tasks = loadTasksFromFIle();
+        
+        
         while(!exit){
             // Show menu options
             System.out.println("\n===== Task & Habit Tracker =====");
@@ -50,7 +57,7 @@ public class Main {
                     }
                     break;
                 case "3":
-                    if( tasks.isEmpty()){System.out.println("No tasks to complete!");}
+                    if(tasks.isEmpty()){System.out.println("No tasks to complete!");}
                     else{
                         System.out.println("\n--- Tasks ---");
                         for( int i= 0; i < tasks.size(); i++){
@@ -81,9 +88,49 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please enter 1-4."); 
             }
+            saveTasksToFIle(tasks);
             exit =true;
         }
         scanner.close();
     }
+
+    public static void saveTasksToFIle(ArrayList<Task> tasks){
+        try(PrintWriter writer = new PrintWriter(new FileWriter("tasks.txt"))){
+            for(Task task : tasks){
+                writer.println(task.getTaskName() + "|" + task.getDueDate() + "|" + task.isHabit() + "|" + task.isCompleted());
+            }
+        } catch(IOException e){
+            System.err.println("Error saving tasks: " + e.getMessage());
+        }
+    } 
+
+    public static ArrayList<Task> loadTasksFromFIle(){
+        ArrayList<Task> tasks = new ArrayList<>();
+        File file = new File("tasks.txt");
+
+        if (!file.exists()){
+            return tasks;
+        }
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] parts = line.split("\\|");
+                if(parts.length == 4){
+                    String name = parts[0];
+                    String dueDate = parts[1];
+                    boolean isHabit = Boolean.parseBoolean(parts[2]);
+                    boolean isComplete = Boolean.parseBoolean(parts[3]);
+
+                    Task task = new Task(name, dueDate, isHabit, isComplete);
+                    tasks.add(task);
+                }
+            }
+        } catch(IOException e){
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+
 
 }
