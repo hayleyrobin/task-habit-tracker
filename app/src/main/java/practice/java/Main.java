@@ -1,15 +1,14 @@
 package practice.java;
 
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
-        ArrayList<Task> tasks = new ArrayList<>();
-
+        TaskManager taskManager = new TaskManager();
+        
         while(!exit){
             // Show menu options
             System.out.println("\n===== Task & Habit Tracker =====");
@@ -18,7 +17,6 @@ public class Main {
             System.out.println("3. Completed a Task");
             System.out.println("4. Exit");
             System.out.println("Enter: ");
-
             
             String input = scanner.nextLine();
 
@@ -35,42 +33,23 @@ public class Main {
                     boolean isHabit = habit.equalsIgnoreCase("yes");
 
                     Task nTask = new Task(name, date, isHabit);
-                    tasks.add(nTask);
+                    taskManager.addTask(nTask);
 
                     System.out.println("Task Added!");
                     break;
                 case "2":
-                    if(tasks.isEmpty()){
-                        System.out.println("Empty Task List!");
-                    } else{
-                        System.out.println("\n--- Tasks ---");
-                        for( int i= 0; i < tasks.size(); i++){
-                            System.out.println((i + 1) + ". " + tasks.get(i));
-                        }
-                    }
+                    taskManager.viewTasks();
                     break;
                 case "3":
-                    if( tasks.isEmpty()){System.out.println("No tasks to complete!");}
+                    if(taskManager.getTasks().isEmpty()){System.out.println("No tasks to complete!");}
                     else{
-                        System.out.println("\n--- Tasks ---");
-                        for( int i= 0; i < tasks.size(); i++){
-                            System.out.println((i + 1) + ". " + tasks.get(i));
-                        }
-
+                        taskManager.viewTasks();
                         System.out.println("Which task would you like to mark complete?: ");
-
                         try{
                             int compNum = Integer.parseInt(scanner.nextLine());
-
-                            if(compNum > 0 && compNum <= tasks.size()){
-                                Task selectedT = tasks.get(compNum-1);
-                                selectedT.markComplete();
-                                System.out.println("Completed Task!");
-                            } else{
-                                System.out.println("Invalid task number choice.");
-                            }
+                            taskManager.markTaskComplete(compNum - 1);
                         } catch(NumberFormatException e){
-                            System.out.println("Please eneter a valid number");
+                            System.out.println("Please enter a valid number");
                         }
                     }
                     break;
@@ -81,7 +60,7 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please enter 1-4."); 
             }
-            exit =true;
+            exit = true;
         }
         scanner.close();
     }
